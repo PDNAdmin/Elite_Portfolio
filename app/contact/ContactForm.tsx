@@ -3,6 +3,15 @@
 import { useState } from "react";
 import { ArrowRight, MailOpenIcon, MessageSquareMore, UserIcon } from "lucide-react";
 
+// Messages are sent with EmailJS (https://www.emailjs.com) straight from the browser.
+// Set these three in .env.local and in Vercel. Without them the form opens the
+// visitor's email app instead.
+const emailjs = {
+  serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+  templateId: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+  publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
+};
+const emailjsReady = Boolean(emailjs.serviceId && emailjs.templateId && emailjs.publicKey);
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -19,16 +28,48 @@ export default function ContactForm({ email }: { email: string }) {
     const form = event.currentTarget;
     const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
 
+    // Hidden field that only bots fill in: pretend it worked
+    if (data.company) {
+      setStatus("sent");
+      return;
+    }
+
+    const name = (data.name ?? "").trim();
+    const from = (data.email ?? "").trim();
+    const message = (data.message ?? "").trim();
+
+    if (!emailjsReady) {
+      // Email sending isn't configured: open the visitor's email app instead
+      const subject = encodeURIComponent(`Website message from ${name}`);
+      const body = encodeURIComponent(`${message}\n\n— ${name} (${from})`);
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+      return;
+    }
+
     setStatus("sending");
     setError("");
 
     try {
-      const res = await fetch("/api/contact", {
+      const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          service_id: emailjs.serviceId,
+          template_id: emailjs.templateId,
+          user_id: emailjs.publicKey,
+          // Several common names, so the template works whichever ones it uses
+          template_params: {
+            name,
+            email: from,
+            message,
+            from_name: name,
+            from_email: from,
+            reply_to: from,
+            to_email: email,
+            title: `New website message from ${name}`,
+          },
+        }),
       });
-      const result = await res.json().catch(() => ({}));
 
       if (res.ok) {
         setStatus("sent");
@@ -36,16 +77,8 @@ export default function ContactForm({ email }: { email: string }) {
         return;
       }
 
-      if (result.fallback) {
-        // Email sending isn't configured: open the visitor's email app instead
-        const subject = encodeURIComponent(`Website message from ${data.name}`);
-        const body = encodeURIComponent(`${data.message}\n\n— ${data.name} (${data.email})`);
-        window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-        setStatus("idle");
-        return;
-      }
-
-      setError(result.error ?? "Something went wrong. Please try again.");
+      console.error("EmailJS send failed", res.status, await res.text().catch(() => ""));
+      setError(`Your message couldn't be sent. Please try again, or email ${email} directly.`);
       setStatus("error");
     } catch {
       setError("Network error. Please check your connection and try again.");
