@@ -5,11 +5,12 @@ import { ArrowRight, MailOpenIcon, MessageSquareMore, UserIcon } from "lucide-re
 
 // Messages are sent with EmailJS (https://www.emailjs.com) straight from the browser.
 // Set these three in .env.local and in Vercel. Without them the form opens the
-// visitor's email app instead.
+// visitor's email app instead. Values are trimmed because stray spaces or tabs
+// pasted into a dashboard make EmailJS reject the key.
 const emailjs = {
-  serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
-  templateId: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
-  publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
+  serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID?.trim(),
+  templateId: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID?.trim(),
+  publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY?.trim(),
 };
 const emailjsReady = Boolean(emailjs.serviceId && emailjs.templateId && emailjs.publicKey);
 
