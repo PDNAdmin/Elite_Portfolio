@@ -3,9 +3,12 @@ import FooterArc from "../components/FooterArc";
 import Headings from "../components/headings";
 import { glowGradient } from "../components/glow";
 import ContactForm from "./ContactForm";
-import { mailtoUrl, site, telegramUrl, whatsappUrl } from "@/lib/site";
+import { contactLinks, getContactPage, getSiteSettings } from "@/lib/content";
+import type { SiteSettings } from "@/lib/content/types";
 
-const contactDetails = [
+const contactDetailsFor = (site: SiteSettings) => {
+  const { mailtoUrl, telegramUrl, whatsappUrl } = contactLinks(site);
+  return [
   {
     label: "WhatsApp",
     value: "Chat with me on WhatsApp",
@@ -30,9 +33,12 @@ const contactDetails = [
     href: `tel:${site.phones[0]}`,
     icon: PhoneCall,
   },
-];
+  ];
+};
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const [page, site] = await Promise.all([getContactPage(), getSiteSettings()]);
+  const contactDetails = contactDetailsFor(site);
   return (
     <main className="relative overflow-clip bg-black text-white">
       <section className="relative isolate">
@@ -47,17 +53,16 @@ export default function ContactPage() {
           {/* Heading */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-end">
             <div>
-              <Headings text="Book a consultation" textClassName="text-white" />
+              <Headings text={page.label} textClassName="text-white" />
               <h1
                 data-fx="words"
                 className="unbounded mt-6 text-balance text-[36px] font-bold leading-[102%] tracking-[-0.07em] md:text-[60px] lg:text-[72px]"
               >
-                Let&apos;s build the future together.
+                {page.heading}
               </h1>
             </div>
             <p data-fx="rise" className="jost max-w-[40ch] text-[18px] leading-[145%] text-white/70 md:text-[21px]">
-              Partner, collaborate, or engage to drive meaningful impact and create
-              lasting value across sectors and communities.
+              {page.text}
             </p>
           </div>
 
@@ -99,10 +104,10 @@ export default function ContactPage() {
               className="relative overflow-hidden rounded-[32px] border border-white/15 bg-white/[0.03] p-6 backdrop-blur-xl md:p-10"
             >
               <div aria-hidden className="pointer-events-none absolute inset-x-10 top-0 h-px bg-linear-to-r from-transparent via-[#F8A308]/70 to-transparent" />
-              <h2 className="unbounded text-[22px] font-bold tracking-[-0.05em] md:text-[28px]">Send a message</h2>
-              <p className="jost mt-2 text-white/60">Tell me what you need and you&apos;ll get a reply by email.</p>
+              <h2 className="unbounded text-[22px] font-bold tracking-[-0.05em] md:text-[28px]">{page.formHeading}</h2>
+              <p className="jost mt-2 text-white/60">{page.formText}</p>
               <div className="mt-8">
-                <ContactForm />
+                <ContactForm email={site.email} />
               </div>
             </div>
           </div>

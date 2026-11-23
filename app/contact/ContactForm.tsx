@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ArrowRight, MailOpenIcon, MessageSquareMore, UserIcon } from "lucide-react";
-import { site } from "@/lib/site";
+
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -10,7 +10,7 @@ const inputClass =
   "jost w-full rounded-2xl border border-white/15 bg-black/40 pl-4 pr-12 text-[16px] text-white outline-none transition placeholder:text-white/30 hover:border-white/25 focus:border-[#F8A308]/80 focus:ring-4 focus:ring-[#F8A308]/15";
 const labelClass = "jost mb-2 block text-[14px] font-medium text-white/75";
 
-export default function ContactForm() {
+export default function ContactForm({ email }: { email: string }) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
 
@@ -40,7 +40,7 @@ export default function ContactForm() {
         // Email sending isn't configured: open the visitor's email app instead
         const subject = encodeURIComponent(`Website message from ${data.name}`);
         const body = encodeURIComponent(`${data.message}\n\n— ${data.name} (${data.email})`);
-        window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
         setStatus("idle");
         return;
       }

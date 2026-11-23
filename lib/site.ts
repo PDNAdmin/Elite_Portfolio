@@ -1,5 +1,5 @@
-// One place for contact details, links and headline numbers.
-// Edit values here and every page updates.
+// Built-in contact details, links and headline numbers. Once Sanity is connected,
+// edit these in the Studio under "Site settings" instead (see SANITY.md).
 
 export const site = {
   name: "Elite Ayomide",

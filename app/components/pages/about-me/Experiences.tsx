@@ -1,87 +1,27 @@
 import Headings from "../../headings";
 import { Check } from "lucide-react";
+import type { Experience, SectionIntro } from "@/lib/content/types";
 
-const ExperiencesArray: IProfessionalExperience[] = [
-  {
-    date: "2025 - PRESENT",
-    title: "Pumpkin DEX - Brand Partner",
-    achievements: [
-      "Livestream 3 times a week on the platform, teaching and analysing the technical analysis of the crypto and the commodity Markets.",
-      "Collaborated with the internal team to drive narrative driven promotional contents to drive sign-ups and Volume on the DEX.",
-    ],
-  },
-  {
-    date: "2026",
-    title: "Mubite Prop Firm — Brand Partner & Video Creator",
-    achievements: [
-      "Produced and edited short-form content showcasing trading benefits of the Prop Firm, driving a 30% follower growth on the brand’s African exposure within 3 months.",
-      "Designed content strategies and performance reports that improved campaign consistency and visual brand identity across all touchpoints.",
-      "Collaborated with internal marketing teams to develop narrative-driven promotional videos that strengthened lead acquisition.",
-    ],
-  },
-
-  {
-    date: "2025 - 2026",
-    title: "Blueberry Funded — Brand Partner & Video Creator",
-    achievements: [
-      "Produced and edited short-form content showcasing trading benefits, driving a 35% follower growth on the brand’s TikTok handle within 3 months.",
-      "Designed content calendars and performance reports that improved campaign consistency and visual brand identity across all touchpoints.",
-      "Collaborated with internal creative teams to develop narrative-driven promotional videos that strengthened lead acquisition.",
-    ],
-  },
-  {
-    date: "2023 - PRESENT",
-    title: "Bybit Exchange — Affiliate & Content Creator",
-    achievements: [
-      "Generated over $2.1M trading volume through affiliate-driven campaigns and targeted content strategies.",
-      "Onboarded nearly 200 verified traders through organic content on YouTube, TikTok, and Telegram.",
-      "Developed 20+ crypto explainer videos that simplified trading tools, leading to a 22% click-through rate improvement on referral links.",
-      "Partnered with Bybit’s marketing division to amplify campaigns, achieving an average engagement rate of 8.5% per post.",
-    ],
-  },
-  {
-    date: "2023 - 2025",
-    title: "OptionFlow Finance — Community Moderator",
-    achievements: [
-      "Oversaw Discord and Telegram channels exceeding 25,000 members, maintaining high engagement and reducing spam incidents by 60% through structured moderation systems.",
-      "Created announcement campaigns that consistently reached 90%+ message visibility, enhancing investor confidence and communication clarity.",
-      "Developed and executed FAQ automation workflow, decreasing repetitive inquiries by 40%, freeing developer time for core operations.",
-      "Collaborated with the marketing team to deliver promotional content and partnership updates, resulting in a 15% monthly increase in returning community users.",
-    ],
-  },
-  {
-    date: "2022 - 2025",
-    title: "MuesliSwap DEX (Cardano) — Community Manager",
-    achievements: [
-      "Managed multi-channel communication hubs (Discord, X & Telegram) with 12K+ combined members, achieving 25% higher weekly engagement rate via active discussions and contests.",
-      "Authored over 50+ project announcements and partnership updates, contributing to steady liquidity inflow and consistent trading volume growth.",
-      "Designed and launched user education initiatives (“Ask Me Anything” sessions & beginner threads), increasing new-user retention by 18% within two months.",
-      "Collaborated with the core dev team to communicate technical updates in digestible content formats for both retail and institutional investors.",
-    ],
-  },
-];
-
-const Experiences = () => {
+const Experiences = ({ intro, experiences }: { intro: SectionIntro; experiences: Experience[] }) => {
   return (
     <section id="professional-experiences" className="relative mx-auto max-w-7xl gutter py-16 md:py-24">
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:gap-16">
         <div className="lg:sticky lg:top-32 lg:self-start">
-          <Headings text="Experience" textClassName="text-white" />
+          <Headings text={intro.label} textClassName="text-white" />
           <h2
             data-fx="words"
             className="unbounded mt-6 text-balance text-[30px] font-bold leading-[105%] tracking-[-0.06em] md:text-[44px]"
           >
-            Where I&apos;ve put in the work.
+            {intro.heading}
           </h2>
           <p data-fx="rise" className="jost mt-5 max-w-[36ch] text-[18px] leading-[145%] text-white/65">
-            Brand partnerships, affiliate campaigns and community roles across
-            exchanges, prop firms and DEXs.
+            {intro.text}
           </p>
         </div>
 
         <ol className="relative space-y-6 border-l border-white/15 pl-6 md:pl-10">
-          {ExperiencesArray.map((experience) => (
-            <ProfessionalExperience {...experience} key={experience.title} />
+          {experiences.map((experience) => (
+            <ProfessionalExperience {...experience} key={`${experience.company}-${experience.date}`} />
           ))}
         </ol>
       </div>
@@ -91,16 +31,7 @@ const Experiences = () => {
 
 export default Experiences;
 
-interface IProfessionalExperience {
-  date: string;
-  title: string;
-  achievements: string[];
-}
-
-function ProfessionalExperience({ date, title, achievements }: IProfessionalExperience) {
-  // "Company — Role" or "Company - Role"
-  const [company, role] = title.split(/s+[—-]s+/);
-
+function ProfessionalExperience({ date, company, role, achievements }: Experience) {
   return (
     <li data-fx="rise" className="relative">
       <span

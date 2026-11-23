@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { mailtoUrl, site } from "@/lib/site";
+import { contactLinks, getSiteSettings } from "@/lib/content";
 
 const quickLinks = [
   { href: "/", label: "Home" },
@@ -16,7 +16,9 @@ const legalLinks = [
   { href: "/disclaimer", label: "Risk disclaimer" },
 ];
 
-const Footer = () => {
+const Footer = async () => {
+  const site = await getSiteSettings();
+  const { mailtoUrl } = contactLinks(site);
   return (
     <footer
       className="w-screen overflow-hidden  text-white font-jost"
@@ -26,7 +28,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="space-y-5">
             <p className="text-xl select-none leading-[99%] tracking-[-8%] text-white/60 jost">
-              The crypto trader that makes you money.
+              {site.footerTagline}
             </p>
             <Image
               src="/Ayomide Logo 1.png"

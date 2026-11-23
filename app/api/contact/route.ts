@@ -1,4 +1,4 @@
-import { site } from "@/lib/site";
+import { getSiteSettings } from "@/lib/content";
 
 // Sends contact-form messages by email through Resend (https://resend.com).
 // Set RESEND_API_KEY in the hosting environment to turn it on. Optional:
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     },
     body: JSON.stringify({
       from: process.env.CONTACT_FROM_EMAIL ?? "Website <onboarding@resend.dev>",
-      to: [process.env.CONTACT_TO_EMAIL ?? site.email],
+      to: [process.env.CONTACT_TO_EMAIL ?? (await getSiteSettings()).email],
       reply_to: email,
       subject: `New website message from ${name}`,
       html: `<p><strong>Name:</strong> ${escape(name)}</p>

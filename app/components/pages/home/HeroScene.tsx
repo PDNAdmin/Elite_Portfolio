@@ -8,6 +8,7 @@ import AnimatedLine from "../../AnimatedBrush";
 import { openVimeoMiniPlayer } from "../../VimeoMiniPlayer";
 import { gsap, ScrollTrigger, prefersReducedMotion } from "@/lib/scroll";
 import { whenPageReady } from "@/lib/pageReady";
+import type { HomePage } from "@/lib/content/types";
 
 // ---------- Decorative price chart (no axis, no prices: it is art, not data) ----------
 
@@ -105,7 +106,7 @@ function PriceChart() {
 
 // ---------- Scene ----------
 
-export default function HeroScene() {
+export default function HeroScene({ hero }: { hero: HomePage["hero"] }) {
   const root = useRef<HTMLElement>(null);
   const router = useRouter();
 
@@ -323,9 +324,9 @@ export default function HeroScene() {
               data-intro
               className="unbounded text-balance text-[clamp(2rem,7.6vw,2.6rem)] font-bold leading-[104%] tracking-[-0.07em] text-white md:text-[clamp(2.8rem,5.4vw,4.9rem)]"
             >
-              A crypto trader that makes{" "}
+              {hero.heading}{" "}
               <span className="relative inline-block">
-                you money.
+                {hero.highlight}
                 <span className="absolute -bottom-5 left-0 w-full overflow-hidden">
                   <AnimatedLine duration={2} strokeWidth={1.5} color="#3C1EDE" delay={0.6} />
                 </span>
@@ -335,8 +336,7 @@ export default function HeroScene() {
               data-intro
               className="jost mx-auto mt-8 max-w-[34ch] text-pretty text-[16px] leading-[140%] tracking-[-0.01em] text-white/65 md:text-[22px] lg:mx-0"
             >
-              Helping traders and investors navigate the trading space profitably
-              with information and education.
+              {hero.text}
             </p>
             <div
               data-intro
@@ -348,7 +348,7 @@ export default function HeroScene() {
                 className="jost inline-flex h-14 w-full max-w-[320px] items-center justify-center gap-3 rounded-full bg-white px-8 text-[15px] font-semibold text-black transition-transform duration-150 hover:-translate-y-0.5 active:scale-[0.97] sm:w-auto"
               >
                 <Send fill="black" className="size-4 rotate-[290deg]" />
-                View my portfolio
+                {hero.portfolioLabel}
               </button>
               <button
                 type="button"
@@ -359,7 +359,7 @@ export default function HeroScene() {
                   <span className="absolute inset-0 animate-ping rounded-full bg-[#F8A308]/30 [animation-duration:2.2s]" />
                   <Play size={22} fill="white" className="relative ml-0.5 text-white" />
                 </span>
-                More Results
+                {hero.resultsLabel}
               </button>
             </div>
           </div>

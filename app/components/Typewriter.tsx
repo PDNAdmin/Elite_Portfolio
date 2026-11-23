@@ -1,9 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 
-const word = "Trader.";
-
-const TypewriterText = () => {
+const TypewriterText = ({ word }: { word: string }) => {
   const [displayed, setDisplayed] = useState("");
   const done = displayed.length >= word.length;
 
@@ -13,7 +11,7 @@ const TypewriterText = () => {
       setDisplayed(word.slice(0, displayed.length + 1));
     }, 120);
     return () => clearTimeout(timeout);
-  }, [displayed, done]);
+  }, [displayed, done, word]);
 
   return (
     <span className="text-[#F8A308] relative">

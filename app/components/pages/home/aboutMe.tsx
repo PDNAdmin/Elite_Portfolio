@@ -6,9 +6,9 @@ import Check from "@/assets/svgs/check.svg";
 import TypewriterText from "../../Typewriter";
 import LazyGlobe from "../../LazyGlobe";
 import SectionContent from "../../SectionContent";
-import { site } from "@/lib/site";
+import type { HomePage } from "@/lib/content/types";
 
-const AboutMe = () => {
+const AboutMe = ({ about }: { about: HomePage["about"] }) => {
   const globeConfig = {
     pointSize: 4,
     globeColor: "#000000",
@@ -393,19 +393,12 @@ const AboutMe = () => {
       color: "#808080",
     },
   ];
-  const aboutHighlights = [
-    "Trader + Crypto Trader",
-    "Growth Strategist",
-    "Community Manager",
-    "Technical Analyst",
-    "Video Content Creator",
-    "Trading Mentor",
-  ];
+  const aboutHighlights = about.highlights;
 
   return (
     <SectionContainer id="aboutMe" className="relative overflow-hidden bg-black">
       <SectionContent>
-        <Headings text="About Me" textClassName="text-[#D9D9D9]" />
+        <Headings text={about.label} textClassName="text-[#D9D9D9]" />
         <div className="mt-6 border-b border-white/10" />
         <div className="grid items-center gap-12 pt-16 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
           <div data-fx="rise" className="relative hidden aspect-square w-full lg:block">
@@ -425,18 +418,16 @@ const AboutMe = () => {
               data-fx="words"
               className="unbounded text-balance text-[30px] font-bold uppercase leading-[110%] tracking-[-0.08em] text-white md:text-[44px] xl:text-[52px]"
             >
-              Who is <span className="text-[#F8A308]">Elite Ayomide?</span>
+              {about.title} <span className="text-[#F8A308]">{about.titleHighlight}</span>
             </h2>
             <p className="unbounded mt-2 h-[1.2em] text-[30px] font-bold leading-[110%] tracking-[-0.06em] text-white md:text-[44px] xl:text-[52px]">
-              A <TypewriterText />
+              A <TypewriterText word={about.typewriterWord} />
             </p>
             <p
               data-fx="rise"
               className="jost mt-6 max-w-[38ch] text-pretty text-[17px] leading-[140%] tracking-[-0.02em] text-white/65 md:text-[24px]"
             >
-              A crypto trader with {site.stats.yearsExperience} years of experience,
-              helping traders and investors navigate the trading space profitably
-              with information and education.
+              {about.text}
             </p>
 
             <ul data-fx="stagger" className="mt-10 grid gap-x-6 gap-y-4 sm:grid-cols-2">
@@ -457,7 +448,7 @@ const AboutMe = () => {
               className="jost mt-12 inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-white px-10 font-semibold text-black transition-transform duration-150 hover:-translate-y-0.5 active:scale-[0.97] sm:w-auto"
             >
               <Send fill="black" strokeWidth={1} size={16} className="rotate-[280deg]" />
-              More About Me
+              {about.ctaLabel}
             </Link>
           </div>
         </div>

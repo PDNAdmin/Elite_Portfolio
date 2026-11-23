@@ -54,6 +54,8 @@ const nextConfig = {
   images: {
     // Serve modern, smaller image formats when the browser supports them
     formats: ["image/avif", "image/webp"],
+    // Images uploaded to Sanity
+    remotePatterns: [{ protocol: "https", hostname: "cdn.sanity.io" }],
   },
 };
 
