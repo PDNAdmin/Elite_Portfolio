@@ -1,17 +1,11 @@
 import { Quote } from "lucide-react";
 import Headings from "../../headings";
 import SectionContent from "../../SectionContent";
-
-export interface Testimonial {
-  name: string;
-  handle?: string;
-  avatar?: string;
-  rating?: number;
-  content: string;
-}
+import type { SectionIntro, Testimonial } from "@/lib/content/types";
 
 interface TestimonialsProps {
   testimonials: Testimonial[];
+  intro: SectionIntro;
 }
 
 const StarRating = ({ rating = 5 }: { rating?: number }) => (
@@ -94,7 +88,7 @@ const MarqueeRow = ({
   </div>
 );
 
-const Testimonials = ({ testimonials }: TestimonialsProps) => {
+const Testimonials = ({ testimonials, intro }: TestimonialsProps) => {
   const half = Math.ceil(testimonials.length / 2);
   const rowA = testimonials.slice(0, half);
   const rowB = testimonials.slice(half);
@@ -110,7 +104,7 @@ const Testimonials = ({ testimonials }: TestimonialsProps) => {
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="space-y-5">
             <Headings
-              text="What clients say"
+              text={intro.label}
               className="bg-[#F8A308]!"
               textClassName="text-black/70"
             />
@@ -118,12 +112,11 @@ const Testimonials = ({ testimonials }: TestimonialsProps) => {
               data-fx="words"
               className="unbounded text-balance text-[34px] font-extrabold leading-[105%] tracking-[-0.07em] text-black md:text-[52px]"
             >
-              500+ trusted customers
+              {intro.heading}
             </h2>
           </div>
           <p data-fx="rise" className="jost max-w-[36ch] text-[18px] leading-[140%] text-black/55 md:text-[20px]">
-            Traders, students and brands who have worked with Elite Ayomide, in
-            their own words.
+            {intro.text}
           </p>
         </div>
       </SectionContent>

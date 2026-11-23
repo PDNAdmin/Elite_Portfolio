@@ -1,86 +1,19 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import { X } from "lucide-react";
 import Headings from "../../headings";
 import { gsap, pauseScroll, prefersReducedMotion } from "@/lib/scroll";
 
-import BlueberryPayout from "@/assets/images/Blueberry_payout.jpg";
-import MubitePay from "@/assets/images/mubite_pay.jpg";
-import BybitTrade from "@/assets/images/e1.jpg";
-import MexcTrade from "@/assets/images/e8.jpg";
-import FundingCert from "@/assets/images/Copy_of_Funded Certificate(2).png";
-import VerificationCert from "@/assets/images/blueberry_cert.png";
+import type { HomePage, Receipt } from "@/lib/content/types";
+import { imageSrc } from "@/lib/content/links";
 
-type Receipt = {
-  src: StaticImageData | { src: string; width: number; height: number };
-  label: string;
-  detail: string;
-  /** USD payout shown on the receipt itself. Only these add to the total. */
-  amount?: number;
-  /** Trade result shown on the receipt */
-  result?: string;
-  /** Desk position (percent of the desk) and resting tilt */
-  at: { l: number; t: number; w: number; r: number };
-};
-
-// Every figure here is printed on the client's own receipt image.
-const receipts: Receipt[] = [
-  {
-    src: BlueberryPayout,
-    label: "Blueberry Funded payout",
-    detail: "14 Jun 2026",
-    amount: 1059.2,
-    at: { l: 0, t: 3, w: 50, r: -4 },
-  },
-  {
-    src: MubitePay,
-    label: "Mubite profit share",
-    detail: "23 Mar 2026",
-    amount: 752.22,
-    at: { l: 52, t: 0, w: 46, r: 3 },
-  },
-  {
-    src: { src: "/Second Mubite withdrawal.jpg", width: 1280, height: 940 },
-    label: "Mubite profit share",
-    detail: "25 Apr 2026",
-    amount: 560.92,
-    at: { l: 4, t: 37, w: 42, r: 2.5 },
-  },
-  {
-    src: BybitTrade,
-    label: "Bybit SOLUSDT short, 10x",
-    detail: "ROI",
-    result: "+105.81%",
-    at: { l: 47, t: 27, w: 22, r: -3 },
-  },
-  {
-    src: MexcTrade,
-    label: "MEXC SIGNUSDT long, 10x",
-    detail: "ROI",
-    result: "+129.07%",
-    at: { l: 73, t: 31, w: 25, r: 4 },
-  },
-  {
-    src: FundingCert,
-    label: "Blueberry Funded",
-    detail: "Certificate of funding",
-    at: { l: 1, t: 68, w: 42, r: -2 },
-  },
-  {
-    src: VerificationCert,
-    label: "Blueberry Funded",
-    detail: "Verification pass, 31 Mar 2026",
-    at: { l: 47, t: 66, w: 44, r: 2 },
-  },
-];
-
-const fullTotal = receipts.reduce((sum, r) => sum + (r.amount ?? 0), 0);
 const usd = (v: number) =>
   "$" + v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-export default function PayoutDesk() {
+export default function PayoutDesk({ payouts, receipts }: { payouts: HomePage["payouts"]; receipts: Receipt[] }) {
+  const fullTotal = receipts.reduce((sum, r) => sum + (r.amount ?? 0), 0);
   const root = useRef<HTMLElement>(null);
   const totalRef = useRef<HTMLSpanElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -164,7 +97,7 @@ export default function PayoutDesk() {
     }, el);
 
     return () => ctx.revert();
-  }, []);
+  }, [receipts]);
 
   // Native <dialog> for the full-size receipt
   useEffect(() => {
@@ -192,15 +125,16 @@ export default function PayoutDesk() {
       <div className="relative mx-auto grid w-full max-w-7xl gap-12 gutter py-20 lg:min-h-svh lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:items-center lg:gap-14 lg:py-24 lg:pt-28">
         {/* Copy + ledger */}
         <div>
-          <Headings text="Verified Trading History" textClassName="text-white" />
+          <Headings text={payouts.label} textClassName="text-white" />
           <h2 className="unbounded mt-8 text-[34px] font-extrabold uppercase leading-[104%] tracking-[-0.09em] text-[#D9D9D9] md:text-[48px]">
-            Real numbers.
-            <br />
-            Real impact.
+            {payouts.heading.split("\n").map((line, i) => (
+              <span key={i} className="block">
+                {line}
+              </span>
+            ))}
           </h2>
           <p className="jost mt-5 max-w-[36ch] text-[17px] leading-[140%] text-white/65 md:text-[19px]">
-            Payout certificates and trade receipts, straight from the platforms.
-            Tap any receipt to see it full size.
+            {payouts.text}
           </p>
 
           <ol className="mt-8 hidden space-y-0 border-t border-white/10 lg:block">
@@ -271,7 +205,7 @@ export default function PayoutDesk() {
                 >
                   <span className="block overflow-hidden rounded-xl border border-white/15 bg-[#0d0c12] shadow-[0_30px_60px_-18px_rgba(0,0,0,0.9)] transition-transform duration-200 ease-out group-hover:-translate-y-1.5 group-hover:scale-[1.02]">
                     <Image
-                      src={r.src}
+                      src={imageSrc(r.image)}
                       alt={`${r.label}, ${r.detail}`}
                       sizes="(min-width: 1024px) 26vw, (min-width: 600px) 50vw, 100vw"
                       // Cards slide in from off-screen, so lazy loading would land them blank.
@@ -322,7 +256,7 @@ export default function PayoutDesk() {
               <X className="size-5" />
             </button>
             <Image
-              src={open.src}
+              src={imageSrc(open.image)}
               alt={`${open.label}, ${open.detail}`}
               sizes="94vw"
               className="mx-auto h-auto max-h-[82vh] w-auto rounded-xl"

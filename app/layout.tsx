@@ -1,37 +1,36 @@
 import type { Metadata } from "next";
 import "lenis/dist/lenis.css";
 import "./globals.css";
-import Header from "./components/Header";
 import { jakarta, jost, satoshi, unbounded } from "./fonts";
 import Footer from "./components/Footer";
+import SiteChrome from "./components/SiteChrome";
 import { cn } from "@/lib/utils";
 import { site } from "@/lib/site";
-import PageLoader from "./components/PageLoader";
-import VimeoMiniPlayer from "./components/VimeoMiniPlayer";
-import MotionProvider from "./components/MotionProvider";
-import SmoothScroll from "./components/SmoothScroll";
-import PageFx from "./components/PageFx";
+import { getSiteSettings } from "@/lib/content";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
-  title: {
-    default: site.name,
-    template: `%s | ${site.name}`,
-  },
-  description: site.description,
-  openGraph: {
-    type: "website",
-    siteName: site.name,
-    title: site.name,
-    description: site.description,
-    url: "/",
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@eliteayomide",
-    creator: "@eliteayomide",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    metadataBase: new URL(site.url),
+    title: {
+      default: settings.name,
+      template: `%s | ${settings.name}`,
+    },
+    description: settings.description,
+    openGraph: {
+      type: "website",
+      siteName: settings.name,
+      title: settings.name,
+      description: settings.description,
+      url: "/",
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@eliteayomide",
+      creator: "@eliteayomide",
+    },
+  };
+}
 
 type RootLayoutProps = Readonly<{
   children: React.ReactNode;
@@ -53,15 +52,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       )}
     >
       <body className="min-h-full flex flex-col w-full overflow-x-hidden bg-black">
-        <MotionProvider>
-          <SmoothScroll />
-          <PageFx />
-          <PageLoader />
-          <Header />
-          {children}
-          <Footer />
-          <VimeoMiniPlayer />
-        </MotionProvider>
+        <SiteChrome footer={<Footer />}>{children}</SiteChrome>
       </body>
     </html>
   );

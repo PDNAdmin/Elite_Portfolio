@@ -1,14 +1,8 @@
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import ExternalLinkButton from "../../ExternalLinkButton";
+import type { FeaturedService } from "@/lib/content/types";
 
-export interface ServiceItem {
-  title: string;
-  description?: string;
-  href?: string;
-  ctaLabel?: string;
-  image: string | StaticImageData;
-  imagePosition?: string;
-}
+type ServiceItem = FeaturedService;
 
 const ServiceRow = ({
   title,
@@ -16,7 +10,6 @@ const ServiceRow = ({
   href,
   ctaLabel = "Book Me Now",
   image,
-  imagePosition = "object-center",
 }: ServiceItem) => (
   <li className="group grid items-center gap-6 border-b border-white/10 py-10 md:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] md:gap-12 md:py-12">
     <div data-fx="rise" className="order-2 md:order-1">
@@ -42,11 +35,12 @@ const ServiceRow = ({
       className="relative order-1 h-52 overflow-hidden rounded-3xl border border-white/10 md:order-2 md:h-64"
     >
       <Image
-        src={image}
-        alt=""
+        src={image.src}
+        alt={image.alt ?? ""}
         fill
         sizes="(min-width: 780px) 45vw, 100vw"
-        className={`object-cover ${imagePosition} transition-transform duration-700 ease-out group-hover:scale-105`}
+        style={{ objectPosition: image.position }}
+        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
       />
       <div className="absolute inset-0 bg-linear-to-tr from-[#3c1ede]/30 via-transparent to-transparent" />
     </div>

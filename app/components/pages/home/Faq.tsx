@@ -9,24 +9,20 @@ import {
 import Headings from "../../headings";
 import SectionContent from "../../SectionContent";
 import { glowGradient } from "../../glow";
-import { mailtoUrl, telegramUrl, whatsappUrl } from "@/lib/site";
-
-export interface FAQItem {
-  question: string;
-  answer: string | string[];
-}
+import type { HomePage } from "@/lib/content/types";
 
 interface FAQProps {
-  items: FAQItem[];
+  faq: HomePage["faq"];
+  links: { telegramUrl: string; whatsappUrl: string; mailtoUrl: string };
 }
 
-const channels = [
-  { label: "Telegram", href: telegramUrl, icon: Send },
-  { label: "WhatsApp", href: whatsappUrl, icon: MessagesSquare },
-  { label: "Email", href: mailtoUrl, icon: Mail },
-];
-
-const FAQ = ({ items }: FAQProps) => {
+const FAQ = ({ faq, links }: FAQProps) => {
+  const { items } = faq;
+  const channels = [
+    { label: "Telegram", href: links.telegramUrl, icon: Send },
+    { label: "WhatsApp", href: links.whatsappUrl, icon: MessagesSquare },
+    { label: "Email", href: links.mailtoUrl, icon: Mail },
+  ];
   return (
     <section id="faq" className="relative overflow-clip bg-black text-white">
       <div
@@ -37,16 +33,15 @@ const FAQ = ({ items }: FAQProps) => {
       <SectionContent className="relative grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20">
         {/* Left: heading and a way out for anyone whose question isn't listed */}
         <div className="lg:sticky lg:top-32 lg:self-start">
-          <Headings text="FAQ" textClassName="text-white" />
+          <Headings text={faq.label} textClassName="text-white" />
           <h2
             data-fx="words"
             className="unbounded mt-6 text-balance text-[32px] font-extrabold leading-[105%] tracking-[-0.07em] md:text-[48px]"
           >
-            Questions, answered.
+            {faq.heading}
           </h2>
           <p data-fx="rise" className="jost mt-5 max-w-[38ch] text-[18px] leading-[140%] text-white/65 md:text-[20px]">
-            Quick answers about Elite Ayomide&apos;s services, who they&apos;re for
-            and how to get started.
+            {faq.text}
           </p>
 
           <div
@@ -93,7 +88,7 @@ const FAQ = ({ items }: FAQProps) => {
                     </span>
                   </AccordionTrigger>
                   <AccordionContent className="jost pb-8 pl-12 pr-4 text-[16px] leading-[160%] text-white/65 md:pl-14 md:text-[18px]">
-                    {Array.isArray(item.answer) ? (
+                    {item.answer.length > 1 ? (
                       <ul className="space-y-3">
                         {item.answer.map((point, pointIndex) => (
                           <li key={pointIndex} className="flex items-start gap-3">
@@ -103,7 +98,7 @@ const FAQ = ({ items }: FAQProps) => {
                         ))}
                       </ul>
                     ) : (
-                      item.answer
+                      item.answer[0]
                     )}
                   </AccordionContent>
                 </li>

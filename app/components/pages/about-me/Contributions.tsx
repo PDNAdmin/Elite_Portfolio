@@ -1,12 +1,10 @@
-const words = ["Contribution", "Participation", "Attribution"];
-
-/** A gold band of his three pillars that glides across the page. */
-function Contributions() {
+/** A gold band of his pillars that glides across the page. */
+function Contributions({ words }: { words: string[] }) {
   // Repeat enough times to cover wide screens, then double for a seamless loop
   const run = [...words, ...words, ...words];
 
   return (
-    <section id="contributions" aria-label="Contribution, participation, attribution" className="relative py-10 md:py-14">
+    <section id="contributions" aria-label={words.join(", ")} className="relative py-10 md:py-14">
       <div className="marquee-row -mx-4 -rotate-2 overflow-hidden border-y border-black/20 bg-[#F8A308] py-4 md:py-6">
         <div
           aria-hidden
